@@ -45,5 +45,8 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+<string>يحتاج رفقة إلى موقعك لمساعدتك على مشاركة موقعك مع أفراد رحلتك.</string>
+
 </dict>
 </plist>

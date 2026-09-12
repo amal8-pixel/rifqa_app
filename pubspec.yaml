@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  geolocator: ^14.0.2
+
 flutter:
   uses-material-design: true
 
