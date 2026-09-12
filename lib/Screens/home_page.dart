@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import 'trip_datails.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final String tripName;
 
   const HomePage({
     super.key,
     required this.tripName,
   });
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String currentTripName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    currentTripName = widget.tripName;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +74,7 @@ class HomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      tripName,
+                      currentTripName,
                       style: const TextStyle(
                         fontSize: 21,
                         fontWeight: FontWeight.bold,
@@ -84,7 +97,7 @@ class HomePage extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => TripDetailsPage(
-                                tripName: tripName,
+                                tripName: currentTripName,
                               ),
                             ),
                           );
@@ -113,11 +126,16 @@ class HomePage extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(
+                  onPressed: () async {
+                    final newTripName = await Navigator.pushNamed(
                       context,
                       '/add-trip',
                     );
+                    if (newTripName != null && newTripName is String) {
+                      setState(() {
+                        currentTripName = newTripName;
+                      });
+                    }
                   },
                   icon: const Icon(
                     Icons.add,
