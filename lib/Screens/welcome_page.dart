@@ -59,7 +59,7 @@ class WelcomePage extends StatelessWidget {
                         onPressed: () {
                           Navigator.pushNamed(
                             context,
-                            '/home',
+                            '/login',
                           );
                         },
                         style: ElevatedButton.styleFrom(

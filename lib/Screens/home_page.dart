@@ -15,7 +15,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String currentTripName = '';
-
   @override
   void initState() {
     super.initState();
@@ -25,11 +24,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final isSmall = MediaQuery.of(context).size.width < 360;
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: const Color(0xFFFAF8F5),
+
+        // الشريط العلوي
         appBar: AppBar(
           backgroundColor: const Color(0xFFFAF8F5),
           elevation: 0,
@@ -40,7 +40,41 @@ class _HomePageState extends State<HomePage> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.add,
+              color: Color(0xFF2E5339),
+              size: 28,
+            ),
+            onPressed: () async {
+              final newTripName = await Navigator.pushNamed(
+                context,
+                '/add-trip',
+              );
+
+              if (newTripName != null && newTripName is String) {
+                setState(() {
+                  currentTripName = newTripName;
+                });
+              }
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.notifications_none,
+                color: Color(0xFF2E5339),
+                size: 27,
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/notifications');
+              },
+            ),
+          ],
         ),
+
+        // محتوى الصفحة
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -54,7 +88,9 @@ class _HomePageState extends State<HomePage> {
                   color: const Color(0xFF2E5339),
                 ),
               ),
+
               const SizedBox(height: 8),
+
               const Text(
                 'رحلاتك في الحرمين، أقرب وأسهل.',
                 style: TextStyle(
@@ -62,7 +98,23 @@ class _HomePageState extends State<HomePage> {
                   color: Color(0xFF4F5F57),
                 ),
               ),
+
               const SizedBox(height: 25),
+
+              // التبويبات
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildTab('الكل', true),
+                  _buildTab('القادمة', false),
+                  _buildTab('النشطة', false),
+                  _buildTab('المنتهية', false),
+                ],
+              ),
+
+              const SizedBox(height: 25),
+
+              // بطاقة الرحلة
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -122,7 +174,10 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+
               const SizedBox(height: 20),
+
+              // إضافة رحلة جديدة
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -131,6 +186,7 @@ class _HomePageState extends State<HomePage> {
                       context,
                       '/add-trip',
                     );
+
                     if (newTripName != null && newTripName is String) {
                       setState(() {
                         currentTripName = newTripName;
@@ -163,7 +219,53 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+
+        // الشريط السفلي
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: 1,
+          selectedItemColor: const Color(0xFF2E5339),
+          unselectedItemColor: Colors.grey,
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'الرئيسية',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.luggage_outlined),
+              activeIcon: Icon(Icons.luggage),
+              label: 'الرحلات',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications_none),
+              activeIcon: Icon(Icons.notifications),
+              label: 'الإشعارات',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: 'الملف الشخصي',
+            ),
+          ],
+          onTap: (index) {
+            if (index == 2) {
+              Navigator.pushNamed(context, '/notifications');
+            }
+          },
+        ),
       ),
     );
   }
+}
+
+Widget _buildTab(String title, bool isSelected) {
+  return Text(
+    title,
+    style: TextStyle(
+      color: isSelected ? Color(0xFF2E5339) : Colors.grey,
+      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      fontSize: 15,
+    ),
+  );
 }
