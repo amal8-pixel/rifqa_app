@@ -22,7 +22,6 @@ class MeetingPointPage extends StatelessWidget {
           centerTitle: true,
           title: const Text(
             'نقطة التجمع',
-            textAlign: TextAlign.right,
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -62,7 +61,6 @@ class MeetingPointPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ================= HERO TOP =================
                     Row(
                       textDirection: TextDirection.rtl,
                       children: [
@@ -83,7 +81,6 @@ class MeetingPointPage extends StatelessWidget {
                           child: Text(
                             'عمرة رمضان 1448',
                             textAlign: TextAlign.right,
-                            textDirection: TextDirection.rtl,
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
@@ -92,26 +89,20 @@ class MeetingPointPage extends StatelessWidget {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 18),
-
                     const Text(
                       'نقطة التجمع',
                       textAlign: TextAlign.right,
-                      textDirection: TextDirection.rtl,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(height: 6),
-
                     const Text(
                       'تأكد من الوصول في الموعد المحدد',
                       textAlign: TextAlign.right,
-                      textDirection: TextDirection.rtl,
                       style: TextStyle(
                         color: Colors.white60,
                         fontSize: 13,
@@ -124,31 +115,14 @@ class MeetingPointPage extends StatelessWidget {
               const SizedBox(height: 28),
 
               // ================= SECTION TITLE =================
-              Row(
-                textDirection: TextDirection.rtl,
-                children: [
-                  Container(
-                    width: 4,
-                    height: 22,
-                    decoration: BoxDecoration(
-                      color: accentColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text(
-                      'مكان التجمع',
-                      textAlign: TextAlign.right,
-                      textDirection: TextDirection.rtl,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
+              const Text(
+                'موقع التجمع',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
 
               const SizedBox(height: 12),
@@ -222,19 +196,15 @@ class MeetingPointPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Row(
-                            textDirection: TextDirection.rtl,
-                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.my_location_rounded,
                                 size: 14,
                                 color: accentColor,
                               ),
-                              const SizedBox(width: 5),
+                              SizedBox(width: 5),
                               Text(
                                 'نقطة التجمع',
-                                textAlign: TextAlign.right,
-                                textDirection: TextDirection.rtl,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 11,
@@ -252,7 +222,7 @@ class MeetingPointPage extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              // ================= LOCATION =================
+              // ================= LOCATION CARD =================
               _infoCard(
                 icon: Icons.location_on_outlined,
                 title: 'مكان التجمع',
@@ -262,7 +232,7 @@ class MeetingPointPage extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // ================= TIME =================
+              // ================= TIME CARD =================
               _infoCard(
                 icon: Icons.access_time_rounded,
                 title: 'وقت التجمع',
@@ -284,7 +254,6 @@ class MeetingPointPage extends StatelessWidget {
                         content: Text(
                           'سيتم فتح الموقع على الخريطة',
                           textAlign: TextAlign.right,
-                          textDirection: TextDirection.rtl,
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -298,8 +267,6 @@ class MeetingPointPage extends StatelessWidget {
                   ),
                   label: const Text(
                     'فتح الموقع',
-                    textAlign: TextAlign.right,
-                    textDirection: TextDirection.rtl,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -336,23 +303,22 @@ class MeetingPointPage extends StatelessWidget {
                   textDirection: TextDirection.rtl,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.info_outline_rounded,
-                      color: accentColor,
-                      size: 20,
-                    ),
-                    SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         'يرجى الحضور قبل موعد التجمع بـ 15 دقيقة.',
                         textAlign: TextAlign.right,
-                        textDirection: TextDirection.rtl,
                         style: TextStyle(
                           color: Colors.white60,
                           fontSize: 13,
                           height: 1.5,
                         ),
                       ),
+                    ),
+                    SizedBox(width: 10),
+                    Icon(
+                      Icons.info_outline_rounded,
+                      color: accentColor,
+                      size: 20,
                     ),
                   ],
                 ),
@@ -381,21 +347,18 @@ class MeetingPointPage extends StatelessWidget {
           color: Colors.white10,
         ),
       ),
-
-      // الأيقونة يسار والكلام يمين
       child: Row(
-        textDirection: TextDirection.ltr,
+        textDirection: TextDirection.rtl,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // ================= TEXT - RIGHT =================
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  textAlign: TextAlign.right,
-                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.left,
                   style: const TextStyle(
                     color: Colors.white54,
                     fontSize: 13,
@@ -404,8 +367,7 @@ class MeetingPointPage extends StatelessWidget {
                 const SizedBox(height: 5),
                 Text(
                   value,
-                  textAlign: TextAlign.right,
-                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.left,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 17,
@@ -415,8 +377,7 @@ class MeetingPointPage extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  textAlign: TextAlign.right,
-                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.left,
                   style: const TextStyle(
                     color: Colors.white54,
                     fontSize: 12,
@@ -430,7 +391,8 @@ class MeetingPointPage extends StatelessWidget {
 
           // ================= ICON - LEFT =================
           Container(
-            padding: const EdgeInsets.all(11),
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               color: accentColor.withOpacity(0.10),
               borderRadius: BorderRadius.circular(14),

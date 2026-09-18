@@ -64,7 +64,7 @@ class WelcomePage extends StatelessWidget {
                           width: 40,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2E5339),
+                            color: const Color(0xFF214E78),
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -100,7 +100,7 @@ class WelcomePage extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2E5339),
+                          backgroundColor: const Color(0xFF214E78),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),

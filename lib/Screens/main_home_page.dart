@@ -486,29 +486,6 @@ class _MainHomePageState extends State<MainHomePage> {
               ),
 
               const SizedBox(height: 11),
-
-              // معلومات الرحلة
-              _serviceCard(
-                icon: Icons.info_outline_rounded,
-                title: 'معلومات الرحلة',
-                subtitle: 'تفاصيل رحلتك ومواعيدها',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TripInfoPage(
-                        trip: {
-                          'name': 'عمرة رمضان 1448',
-                          'type': 'عمرة',
-                          'data': '15 رمضان 1448',
-                          'members': '7',
-                          'status': 'قادمة',
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
             ],
           ),
         ),
@@ -641,12 +618,16 @@ class _MainHomePageState extends State<MainHomePage> {
   // =========================
 
   Widget _sectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 19,
-        fontWeight: FontWeight.bold,
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Text(
+        title,
+        textAlign: TextAlign.right,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -707,18 +688,45 @@ class _MainHomePageState extends State<MainHomePage> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        height: 125,
+        height: 110,
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.055),
+          color: const Color(0xFF17243A),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: Colors.white.withOpacity(0.07),
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+        child: Row(
+          textDirection: TextDirection.rtl,
           children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    title,
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
             Container(
               width: 42,
               height: 42,
@@ -730,23 +738,6 @@ class _MainHomePageState extends State<MainHomePage> {
                 icon,
                 color: lightBlue,
                 size: 23,
-              ),
-            ),
-            const Spacer(),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              subtitle,
-              style: const TextStyle(
-                color: Colors.white54,
-                fontSize: 10,
               ),
             ),
           ],
@@ -786,7 +777,34 @@ class _MainHomePageState extends State<MainHomePage> {
           ),
         ),
         child: Row(
+          textDirection: TextDirection.rtl,
           children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: const [
+                  Text(
+                    'نقطة التجمع',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'فندق أبراج الصفوة · 8:00 مساء',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: Colors.white60,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 13),
             Container(
               width: 47,
               height: 47,
@@ -800,30 +818,7 @@ class _MainHomePageState extends State<MainHomePage> {
                 size: 24,
               ),
             ),
-            const SizedBox(width: 13),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'نقطة التجمع',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'فندق أبراج الصفوة · 8:00 مساء',
-                    style: TextStyle(
-                      color: Colors.white60,
-                      fontSize: 11,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            const SizedBox(width: 10),
             const Icon(
               Icons.arrow_back_ios_new_rounded,
               color: Colors.white54,
@@ -852,26 +847,22 @@ class _MainHomePageState extends State<MainHomePage> {
         width: double.infinity,
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.055),
+          color: const Color(0xFF17243A),
           borderRadius: BorderRadius.circular(19),
           border: Border.all(
             color: Colors.white.withOpacity(0.07),
           ),
         ),
         child: Row(
+          textDirection: TextDirection.rtl,
           children: [
-            const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Colors.white38,
-              size: 14,
-            ),
-            const SizedBox(width: 12),
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     title,
+                    textAlign: TextAlign.right,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 15,
@@ -881,6 +872,7 @@ class _MainHomePageState extends State<MainHomePage> {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
+                    textAlign: TextAlign.right,
                     style: const TextStyle(
                       color: Colors.white54,
                       fontSize: 11,
@@ -889,6 +881,7 @@ class _MainHomePageState extends State<MainHomePage> {
                 ],
               ),
             ),
+            const SizedBox(width: 12),
             Container(
               width: 45,
               height: 45,
@@ -901,6 +894,12 @@ class _MainHomePageState extends State<MainHomePage> {
                 color: lightBlue,
                 size: 23,
               ),
+            ),
+            const SizedBox(width: 10),
+            const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white38,
+              size: 14,
             ),
           ],
         ),
