@@ -11,16 +11,25 @@ environment:
 dependencies:
   cloud_firestore: ^6.10.0
   firebase_core: ^4.15.0
+
+
   flutter:
     sdk: flutter
 
   flutter_bloc: ^9.1.1
   geolocator: ^14.0.2
+  http: ^1.6.0
+
+  dio: ^5.9.0
+  shared_preferences: ^2.5.3
+  
+
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/images/haram.png
-    - assets/images/madina.jpg
+    - assets/images/login_bg.png
+    
     

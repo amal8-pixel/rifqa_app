@@ -2,60 +2,97 @@ import 'package:flutter/material.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
-
   @override
   Widget build(BuildContext context) {
     final isSmall = MediaQuery.of(context).size.width < 360;
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: const Color(0xFFFAF8F5),
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF2E5339),
-          title: const Text(
-            'رفقة',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          centerTitle: true,
-        ),
-        body: Column(
+        backgroundColor: const Color(0xFF071A2B),
+        body: Stack(
+          fit: StackFit.expand,
           children: [
-            Expanded(
-              flex: 3,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 50,
-                    left: 20,
-                    right: 20,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'أهلاً بك في رفقة',
-                        style: TextStyle(
-                          fontSize: isSmall ? 24 : 28,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF2E5339),
-                        ),
-                        textAlign: TextAlign.center,
+            Image.asset(
+              'assets/images/haram.png',
+              fit: BoxFit.cover,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.2),
+                    Colors.black.withOpacity(0.5),
+                    const Color(0xFF071A2B).withOpacity(0.95),
+                  ],
+                ),
+              ),
+            ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 24,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Spacer(),
+                    Text(
+                      'أهلًا بك في رِفقة',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: isSmall ? 34 : 40,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'رفيق رحلتك في الحرمين',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF2E5339),
-                        ),
-                        textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'رفيق رحلتك في الحرمين\nمن البداية حتى العودة',
+                      style: TextStyle(
+                        color: Color(0xFFD5DFE7),
+                        fontSize: 18,
+                        height: 1.6,
                       ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2E5339),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          width: 25,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Colors.white30,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          width: 25,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Colors.white30,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 40),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 60,
+                      child: ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamed(
                             context,
@@ -65,57 +102,21 @@ class WelcomePage extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2E5339),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 10,
+                            borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'ابدأ رحلتك',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ],
+                        child: const Text(
+                          'ابدأ رحلتك',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 4,
-              child: ShaderMask(
-                shaderCallback: (rect) {
-                  return const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black,
-                    ],
-                    stops: [0.0, 0.8],
-                  ).createShader(rect);
-                },
-                blendMode: BlendMode.dstIn,
-                child: Image.asset(
-                  'assets/images/haram.png',
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter,
+                    ),
+                    const SizedBox(height: 25),
+                  ],
                 ),
               ),
             ),

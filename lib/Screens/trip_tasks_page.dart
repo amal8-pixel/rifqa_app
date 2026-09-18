@@ -7,6 +7,10 @@ class TripTasksPage extends StatefulWidget {
 }
 
 class _TripTasksPageState extends State<TripTasksPage> {
+  static const Color backgroundColor = Color(0xFF0B1220);
+  static const Color cardColor = Color(0xFF17243A);
+  static const Color primaryColor = Color(0xFF214E78);
+  static const Color accentColor = Color(0xFF5C9BD1);
   final List<Map<String, dynamic>> tasks = [
     {
       'title': 'تجهيز حقيبة الرحلة',
@@ -41,201 +45,318 @@ class _TripTasksPageState extends State<TripTasksPage> {
   ];
   int get completedTasks => tasks.where((task) => task['done'] == true).length;
   double get progress => tasks.isEmpty ? 0 : completedTasks / tasks.length;
-
   void _showAddTaskDialog() {
     final taskController = TextEditingController();
     String selectedCategory = 'قبل الرحلة';
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: const Color(0xFFFAF8F5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              title: const Text(
-                'إضافة مهمة',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: Color(0xFF2E5339),
-                  fontWeight: FontWeight.bold,
+          builder: (dialogContext, setDialogState) {
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: AlertDialog(
+                backgroundColor: cardColor,
+                surfaceTintColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  side: BorderSide(
+                    color: Colors.white.withOpacity(0.07),
+                  ),
                 ),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: taskController,
-                    textAlign: TextAlign.right,
-                    decoration: InputDecoration(
-                      hintText: 'اكتبي اسم المهمة',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide.none,
+                title: const Text(
+                  'إضافة مهمة',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: taskController,
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'اكتبي اسم المهمة',
+                        hintStyle: const TextStyle(
+                          color: Colors.white38,
+                        ),
+                        filled: true,
+                        fillColor: backgroundColor,
+                        prefixIcon: const Icon(
+                          Icons.task_alt_outlined,
+                          color: accentColor,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: Colors.white.withOpacity(0.06),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(
+                            color: accentColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    DropdownButtonFormField<String>(
+                      value: selectedCategory,
+                      dropdownColor: cardColor,
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: backgroundColor,
+                        prefixIcon: const Icon(
+                          Icons.category_outlined,
+                          color: accentColor,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: Colors.white.withOpacity(0.06),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(
+                            color: accentColor,
+                          ),
+                        ),
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'قبل الرحلة',
+                          child: Text('قبل الرحلة'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'أثناء الرحلة',
+                          child: Text('أثناء الرحلة'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setDialogState(() {
+                            selectedCategory = value;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                actionsPadding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                    },
+                    child: const Text(
+                      'إلغاء',
+                      style: TextStyle(
+                        color: Colors.white54,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: selectedCategory,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide.none,
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'قبل الرحلة',
-                        child: Text('قبل الرحلة'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'أثناء الرحلة',
-                        child: Text('أثناء الرحلة'),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        setDialogState(() {
-                          selectedCategory = value;
-                        });
+                    onPressed: () {
+                      if (taskController.text.trim().isEmpty) {
+                        return;
                       }
+
+                      setState(() {
+                        tasks.add({
+                          'title': taskController.text.trim(),
+                          'subtitle': 'مهمة مضافة حديثًا',
+                          'category': selectedCategory,
+                          'done': false,
+                        });
+                      });
+
+                      Navigator.pop(dialogContext);
                     },
+                    child: const Text(
+                      'إضافة',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'إلغاء',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E5339),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  onPressed: () {
-                    if (taskController.text.trim().isEmpty) {
-                      return;
-                    }
-
-                    setState(() {
-                      tasks.add({
-                        'title': taskController.text.trim(),
-                        'subtitle': 'مهمة مضافة حديثًا',
-                        'category': selectedCategory,
-                        'done': false,
-                      });
-                    });
-
-                    Navigator.pop(context);
-                  },
-                  child: const Text('إضافة'),
-                ),
-              ],
             );
           },
         );
       },
-    );
+    ).then((_) {
+      taskController.dispose();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAF8F5),
-      appBar: AppBar(
-        title: const Text(
-          'مهام الرحلة',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          title: const Text(
+            'مهام الرحلة',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          centerTitle: true,
+          backgroundColor: backgroundColor,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.add_rounded,
+                color: accentColor,
+              ),
+              onPressed: _showAddTaskDialog,
+            ),
+          ],
         ),
-        centerTitle: true,
-        backgroundColor: const Color(0xFFFAF8F5),
-        foregroundColor: const Color(0xFF2E5339),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_rounded),
-            onPressed: _showAddTaskDialog,
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          // ملخص الإنجاز
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFF2E5339),
-              borderRadius: BorderRadius.circular(24),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
+          children: [
+            // ملخص الإنجاز
+            Container(
+              padding: const EdgeInsets.all(21),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Color(0xFF214E78),
+                    Color(0xFF10253F),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.08),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.10),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Icon(
+                          Icons.checklist_rounded,
+                          color: accentColor,
+                          size: 26,
+                        ),
+                      ),
+                      const SizedBox(width: 13),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'عمرة رمضان 1448',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              'تابع مهام رحلتك خطوة بخطوة',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '$completedTasks من ${tasks.length} مهام مكتملة',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 13,
+                        ),
+                      ),
+                      Text(
+                        '${(progress * 100).round()}%',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 9),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 8,
+                      backgroundColor: Colors.white.withOpacity(0.15),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        accentColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'عمرة رمضان 1448',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '$completedTasks من ${tasks.length} مهام مكتملة',
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 8,
-                    backgroundColor: Colors.white24,
-                    valueColor:
-                        const AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                ),
-              ],
+
+            const SizedBox(height: 28),
+
+            _buildSection(
+              title: 'قبل الرحلة',
+              category: 'قبل الرحلة',
             ),
-          ),
 
-          const SizedBox(height: 28),
+            const SizedBox(height: 16),
 
-          _buildSection(
-            title: 'قبل الرحلة',
-            category: 'قبل الرحلة',
-          ),
-
-          const SizedBox(height: 24),
-
-          _buildSection(
-            title: 'أثناء الرحلة',
-            category: 'أثناء الرحلة',
-          ),
-        ],
+            _buildSection(
+              title: 'أثناء الرحلة',
+              category: 'أثناء الرحلة',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -247,15 +368,30 @@ class _TripTasksPageState extends State<TripTasksPage> {
     final categoryTasks =
         tasks.where((task) => task['category'] == category).toList();
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF2E5339),
-          ),
+        Row(
+          textDirection: TextDirection.rtl,
+          children: [
+            Container(
+              width: 5,
+              height: 22,
+              decoration: BoxDecoration(
+                color: accentColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const SizedBox(width: 9),
+            Text(
+              title,
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 12),
         ...categoryTasks.map(
@@ -270,8 +406,13 @@ class _TripTasksPageState extends State<TripTasksPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDone
+              ? accentColor.withOpacity(0.15)
+              : Colors.white.withOpacity(0.06),
+        ),
       ),
       child: CheckboxListTile(
         value: isDone,
@@ -280,23 +421,32 @@ class _TripTasksPageState extends State<TripTasksPage> {
             task['done'] = value ?? false;
           });
         },
-        activeColor: const Color(0xFF2E5339),
+        activeColor: accentColor,
+        checkColor: backgroundColor,
         title: Text(
           task['title'],
+          textAlign: TextAlign.right,
           style: TextStyle(
+            fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: isDone ? Colors.grey : const Color(0xFF2E5339),
-            decoration: isDone ? TextDecoration.lineThrough : null,
+            color: isDone ? Colors.white54 : Colors.white,
+            decoration:
+                isDone ? TextDecoration.lineThrough : TextDecoration.none,
+            decorationColor: Colors.white54,
           ),
         ),
-        subtitle: Text(
-          task['subtitle'],
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 12,
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            task['subtitle'],
+            textAlign: TextAlign.right,
+            style: const TextStyle(
+              color: Colors.white54,
+              fontSize: 12,
+            ),
           ),
         ),
-        controlAffinity: ListTileControlAffinity.leading,
+        controlAffinity: ListTileControlAffinity.trailing,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 12,
           vertical: 6,

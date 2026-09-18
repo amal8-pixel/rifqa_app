@@ -9,8 +9,8 @@ class MyTripsPage extends StatefulWidget {
 }
 
 class _MyTripsPageState extends State<MyTripsPage> {
-  final Color primaryColor = const Color(0xFF2E5339);
-  final Color backgroundColor = const Color(0xFFFAF8F5);
+  final Color primaryColor = const Color(0xFF5C9BD1);
+  final Color backgroundColor = const Color(0xFF0B1220);
   int selectedTab = 0;
 
   @override
@@ -24,13 +24,13 @@ class _MyTripsPageState extends State<MyTripsPage> {
         title: const Text(
           'رحلاتي',
           style: TextStyle(
-            color: Color(0xFF2E5339),
+            color: Colors.white,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
         iconTheme: const IconThemeData(
-          color: Color(0xFF2E5339),
+          color: Colors.white,
         ),
         actions: [
           IconButton(
@@ -97,8 +97,13 @@ class _MyTripsPageState extends State<MyTripsPage> {
 
                 if (trips.isEmpty) {
                   return const Center(
-                    child: Text('لا توجد رحلات هنا'),
-                  );
+                      child: Text(
+                    'لا توجد رحلات هنا',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 16,
+                    ),
+                  ));
                 }
 
                 return ListView.separated(
@@ -132,16 +137,18 @@ class _MyTripsPageState extends State<MyTripsPage> {
           vertical: 11,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? primaryColor : Colors.white,
+          color:
+              isSelected ? Color(0xFF214E78) : Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? primaryColor : Colors.grey.shade300,
-          ),
+              color: isSelected
+                  ? Color(0xFF214E78)
+                  : Colors.white.withOpacity(0.05)),
         ),
         child: Text(
           title,
           style: TextStyle(
-            color: isSelected ? Colors.white : primaryColor,
+            color: isSelected ? Colors.white : Colors.white70,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -153,11 +160,11 @@ class _MyTripsPageState extends State<MyTripsPage> {
     final String status = trip['status'] ?? '';
     Color statusColor;
     if (status == 'قادمة') {
-      statusColor = const Color(0xFF2E5339);
+      statusColor = const Color(0xFF5C9BD1);
     } else if (status == 'نشطة') {
-      statusColor = const Color(0xFF1976A8);
+      statusColor = const Color(0xFF4FC3F7);
     } else {
-      statusColor = const Color(0xFFC63828);
+      statusColor = const Color(0xFF90A4AE);
     }
     return InkWell(
       onTap: () {
@@ -174,7 +181,7 @@ class _MyTripsPageState extends State<MyTripsPage> {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xff101c33),
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
@@ -195,8 +202,16 @@ class _MyTripsPageState extends State<MyTripsPage> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    color: Color(0xff101c33),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.05),
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                      ),
+                    ],
                   ),
                   child: Text(
                     status,
@@ -232,7 +247,7 @@ class _MyTripsPageState extends State<MyTripsPage> {
                 Text(
                   trip['date'] ?? '',
                   style: const TextStyle(
-                    color: Colors.grey,
+                    color: Colors.white60,
                     fontSize: 13,
                   ),
                 ),
@@ -240,13 +255,13 @@ class _MyTripsPageState extends State<MyTripsPage> {
                 const Icon(
                   Icons.calendar_today_outlined,
                   size: 16,
-                  color: Colors.grey,
+                  color: Colors.white60,
                 ),
                 const SizedBox(width: 18),
                 Text(
                   '${trip['members'] ?? 0} معتمرين',
                   style: const TextStyle(
-                    color: Colors.grey,
+                    color: Colors.white60,
                     fontSize: 13,
                   ),
                 ),
@@ -254,12 +269,14 @@ class _MyTripsPageState extends State<MyTripsPage> {
                 const Icon(
                   Icons.people_outline,
                   size: 17,
-                  color: Colors.grey,
+                  color: Colors.white60,
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            const Divider(),
+            Divider(
+              color: Colors.white.withOpacity(0.08),
+            ),
             const SizedBox(height: 4),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -267,7 +284,7 @@ class _MyTripsPageState extends State<MyTripsPage> {
                 Text(
                   'عرض تفاصيل الرحلة',
                   style: TextStyle(
-                    color: Color(0xFF2E5339),
+                    color: Color(0xFF5C9BD1),
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -276,7 +293,7 @@ class _MyTripsPageState extends State<MyTripsPage> {
                 Icon(
                   Icons.arrow_back_ios_rounded,
                   size: 13,
-                  color: Color(0xFF2E5339),
+                  color: Color(0xFF5C9BD1),
                 ),
               ],
             ),

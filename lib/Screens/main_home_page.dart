@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import '../models/prayer_model.dart';
 
 import 'rafqa_ai_page.dart';
 import 'pilgrims_page.dart';
@@ -8,8 +11,16 @@ import 'trip_tasks_page.dart';
 import 'trip_info_page.dart';
 import 'notifications_page.dart';
 
+import '../services/prayer_service.dart';
+import '../services/weather_service.dart';
+
 class MainHomePage extends StatefulWidget {
-  const MainHomePage({super.key});
+  final Function(bool) onThemeChanged;
+
+  const MainHomePage({
+    super.key,
+    required this.onThemeChanged,
+  });
 
   @override
   State<MainHomePage> createState() => _MainHomePageState();
@@ -18,8 +29,42 @@ class MainHomePage extends StatefulWidget {
 class _MainHomePageState extends State<MainHomePage> {
   int selectedIndex = 0;
 
-  final Color primaryColor = const Color(0xFF2E5339);
-  final Color backgroundColor = const Color(0xFFFAF8F5);
+  Future<PrayerModel>? prayerTimes;
+  Future<Map<String, dynamic>>? weatherData;
+
+  Timer? prayerTimer;
+
+  // =========================
+  // ألوان الهوية
+  // =========================
+
+  static const Color backgroundColor = Color(0xFF0B1220);
+  static const Color navyColor = Color(0xFF101C33);
+  static const Color blueColor = Color(0xFF173A5E);
+  static const Color lightBlue = Color(0xFF5C9BD1);
+
+  @override
+  void initState() {
+    super.initState();
+
+    prayerTimes = PrayerService.getPrayerTimes();
+    weatherData = WeatherService.getWeather();
+
+    prayerTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) {
+        if (mounted) {
+          setState(() {});
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    prayerTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,34 +72,40 @@ class _MainHomePageState extends State<MainHomePage> {
       backgroundColor: backgroundColor,
 
       // =========================
-      // الصفحة الرئيسية
+      // الصفحة
       // =========================
+
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 15, 20, 100),
+          padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // =========================
-              // Header
+              // HEADER
               // =========================
+
               Row(
                 children: [
+                  // صورة المستخدم
                   Container(
-                    width: 44,
-                    height: 44,
+                    width: 46,
+                    height: 46,
                     decoration: BoxDecoration(
-                      color: primaryColor.withOpacity(0.1),
+                      color: Colors.white.withOpacity(0.07),
                       shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.08),
+                      ),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.person_outline_rounded,
-                      color: primaryColor,
-                      size: 25,
+                      color: Colors.white,
+                      size: 24,
                     ),
                   ),
 
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 11),
 
                   const Expanded(
                     child: Column(
@@ -63,65 +114,56 @@ class _MainHomePageState extends State<MainHomePage> {
                         Text(
                           'أهلًا بك 👋',
                           style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey,
+                            color: Colors.white60,
+                            fontSize: 12,
                           ),
                         ),
+                        SizedBox(height: 2),
                         Text(
                           'أمل',
                           style: TextStyle(
-                            fontSize: 17,
+                            color: Colors.white,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF2E5339),
                           ),
                         ),
                       ],
                     ),
                   ),
 
+                  // الموقع
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.location_on_outlined,
-                        color: primaryColor,
-                        size: 19,
+                        color: lightBlue,
+                        size: 17,
                       ),
                       const SizedBox(width: 3),
                       const Text(
                         'مكة المكرمة',
                         style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF2E5339),
+                          color: Colors.white70,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 9),
 
                   // زر الإشعارات
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.notifications_rounded,
-                        color: primaryColor,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const NotificationsPage(),
-                          ),
-                        );
-                      },
-                    ),
+                  _headerButton(
+                    icon: Icons.notifications_none_rounded,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationsPage(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -129,61 +171,76 @@ class _MainHomePageState extends State<MainHomePage> {
               const SizedBox(height: 22),
 
               // =========================
-              // Hero
+              // MAIN RAFQA CARD
               // =========================
+
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(22),
+                padding: const EdgeInsets.all(19),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                     colors: [
-                      Color(0xFF416E51),
-                      Color(0xFF2E5339),
+                      Color(0xFF214E78),
+                      Color(0xFF10253F),
+                      Color(0xFF0D182B),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.08),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 25,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    // اسم رفقة
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
+                            horizontal: 11,
+                            vertical: 7,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(14),
+                            color: Colors.white.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.06),
+                            ),
                           ),
                           child: const Text(
                             'رحلتك القادمة بعد 5 أيام',
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
+                              color: Colors.white70,
+                              fontSize: 10,
                             ),
                           ),
                         ),
                         const Text(
-                          'رفقة',
+                          'رِفقة',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 24,
+                            fontSize: 25,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 20),
 
                     const Text(
                       'عمرة رمضان 1448',
-                      textAlign: TextAlign.right,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
@@ -193,54 +250,147 @@ class _MainHomePageState extends State<MainHomePage> {
 
                     const SizedBox(height: 5),
 
-                    Text(
+                    const Text(
                       'رفيق رحلتك في الحرمين',
-                      textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
+                        color: Colors.white60,
+                        fontSize: 13,
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 19),
 
                     // =========================
-                    // الصلاة + الطقس
+                    // الصلاة والطقس
                     // =========================
+
                     Row(
                       children: [
+                        // مواقيت الصلاة
                         Expanded(
                           child: _heroInfo(
                             icon: Icons.access_time_rounded,
-                            title: 'الصلاة القادمة',
-                            value: 'العصر · 3:45 م',
+                            title: 'مواقيت الصلاة',
+                            child: FutureBuilder<PrayerModel>(
+                              future: prayerTimes,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return const Text(
+                                    'جاري التحميل...',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  );
+                                }
+
+                                final prayer = snapshot.data!;
+
+                                final nextPrayerTime = prayer.dateTime;
+
+                                final remaining = nextPrayerTime.difference(
+                                  DateTime.now(),
+                                );
+
+                                final safeRemaining = remaining.isNegative
+                                    ? Duration.zero
+                                    : remaining;
+
+                                final hours = safeRemaining.inHours
+                                    .toString()
+                                    .padLeft(2, '0');
+
+                                final minutes = (safeRemaining.inMinutes % 60)
+                                    .toString()
+                                    .padLeft(2, '0');
+
+                                final seconds = (safeRemaining.inSeconds % 60)
+                                    .toString()
+                                    .padLeft(2, '0');
+
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '${prayer.name} · ${prayer.time}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      '$hours:$minutes:$seconds',
+                                      style: const TextStyle(
+                                        color: lightBlue,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
+
                         const SizedBox(width: 10),
+
+                        // الطقس
                         Expanded(
                           child: _heroInfo(
                             icon: Icons.wb_sunny_outlined,
                             title: 'الطقس',
-                            value: '39° · مشمس',
+                            child: FutureBuilder<Map<String, dynamic>>(
+                              future: weatherData,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return const Text(
+                                    'جاري التحميل...',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  );
+                                }
+
+                                final weather = snapshot.data!;
+
+                                return Text(
+                                  '${weather['temp']}° · ${weather['condition']}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ],
                     ),
 
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 12),
 
                     // =========================
                     // الذكر
                     // =========================
+
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 11,
+                        horizontal: 15,
+                        vertical: 14,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(14),
+                        color: Colors.white.withOpacity(0.07),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.07),
+                        ),
                       ),
                       child: const Text(
                         '( وَقُل رَّبِّ زِدْنِي عِلْمًا )',
@@ -248,6 +398,7 @@ class _MainHomePageState extends State<MainHomePage> {
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 13,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -260,91 +411,64 @@ class _MainHomePageState extends State<MainHomePage> {
               // =========================
               // أدوات الرحلة
               // =========================
-              const Text(
-                'أدوات الرحلة',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2E5339),
-                ),
-              ),
 
-              const SizedBox(height: 14),
+              _sectionTitle('أدوات الرحلة'),
 
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.3,
+              const SizedBox(height: 13),
+
+              Row(
                 children: [
-                  // المعتمرون
-                  _wideHomeCard(
-                    icon: Icons.people_outline_rounded,
-                    title: 'المعتمرون',
-                    subtitle: 'قائمة المعتمرين',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PilgrimsPage(),
-                        ),
-                      );
-                    },
+                  Expanded(
+                    child: _toolCard(
+                      icon: Icons.luggage_outlined,
+                      title: 'رحلاتي',
+                      subtitle: 'عرض رحلاتك',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MyTripsPage(),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-
-                  // رحلاتي
-                  _wideHomeCard(
-                    icon: Icons.luggage_outlined,
-                    title: 'رحلاتي',
-                    subtitle: 'عرض رحلاتك',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyTripsPage(),
-                        ),
-                      );
-                    },
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _toolCard(
+                      icon: Icons.people_outline_rounded,
+                      title: 'المعتمرون',
+                      subtitle: 'قائمة المعتمرين',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PilgrimsPage(),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 13),
 
               // =========================
               // نقطة التجمع
               // =========================
-              _wideHomeCard(
-                icon: Icons.place_outlined,
-                title: 'نقطة التجمع',
-                subtitle: 'فندق أبراج الصفوة · 8:00 مساء',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MeetingPointPage(),
-                    ),
-                  );
-                },
-              ),
+
+              _meetingCard(),
 
               const SizedBox(height: 28),
 
               // =========================
-              // خدمات الرحلة
+              // الخدمات
               // =========================
-              const Text(
-                'خدمات رحلتك',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2E5339),
-                ),
-              ),
 
-              const SizedBox(height: 12),
+              _sectionTitle('خدمات رحلتك'),
+
+              const SizedBox(height: 13),
 
               // مهام الرحلة
               _serviceCard(
@@ -361,7 +485,7 @@ class _MainHomePageState extends State<MainHomePage> {
                 },
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 11),
 
               // معلومات الرحلة
               _serviceCard(
@@ -385,8 +509,6 @@ class _MainHomePageState extends State<MainHomePage> {
                   );
                 },
               ),
-
-              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -395,9 +517,10 @@ class _MainHomePageState extends State<MainHomePage> {
       // =========================
       // مساعد رفقة
       // =========================
+
       floatingActionButton: FloatingActionButton(
-        backgroundColor: primaryColor,
-        elevation: 5,
+        backgroundColor: blueColor,
+        elevation: 8,
         onPressed: () {
           Navigator.push(
             context,
@@ -409,94 +532,121 @@ class _MainHomePageState extends State<MainHomePage> {
         child: const Icon(
           Icons.smart_toy_outlined,
           color: Colors.white,
-          size: 27,
+          size: 26,
         ),
       ),
 
       // =========================
       // Bottom Navigation
       // =========================
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: selectedIndex,
-        onTap: (index) {
-          // الرئيسية
-          if (index == 0) {
-            setState(() {
-              selectedIndex = 0;
-            });
-          }
 
-          // رحلاتي
-          else if (index == 1) {
-            setState(() {
-              selectedIndex = 1;
-            });
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF0D1728),
+          border: Border(
+            top: BorderSide(
+              color: Colors.white.withOpacity(0.06),
+            ),
+          ),
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          currentIndex: selectedIndex,
+          onTap: (index) {
+            if (index == 0) {
+              setState(() {
+                selectedIndex = 0;
+              });
+            } else if (index == 1) {
+              setState(() {
+                selectedIndex = 1;
+              });
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyTripsPage(),
-              ),
-            );
-          }
-
-          // الإشعارات
-          else if (index == 2) {
-            setState(() {
-              selectedIndex = 2;
-            });
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NotificationsPage(),
-              ),
-            );
-          }
-
-          // ملفي
-          else if (index == 3) {
-            setState(() {
-              selectedIndex = 3;
-            });
-
-            // مؤقتًا حتى تضيف ProfilePage
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'صفحة الملف الشخصي قيد التطوير',
-                  textAlign: TextAlign.right,
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyTripsPage(),
                 ),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          }
-        },
-        selectedItemColor: primaryColor,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home_rounded),
-            label: 'الرئيسية',
+              );
+            } else if (index == 2) {
+              setState(() {
+                selectedIndex = 2;
+              });
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationsPage(),
+                ),
+              );
+            }
+          },
+          selectedItemColor: lightBlue,
+          unselectedItemColor: Colors.white38,
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home_rounded),
+              label: 'الرئيسية',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.luggage_outlined),
+              activeIcon: Icon(Icons.luggage_rounded),
+              label: 'رحلاتي',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications_none_rounded),
+              activeIcon: Icon(Icons.notifications_rounded),
+              label: 'الإشعارات',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =========================
+  // Header Button
+  // =========================
+
+  Widget _headerButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 43,
+        height: 43,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.07),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.07),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.luggage_outlined),
-            activeIcon: Icon(Icons.luggage_rounded),
-            label: 'رحلاتي',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_none_rounded),
-            activeIcon: Icon(Icons.notifications_rounded),
-            label: 'الإشعارات',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_rounded),
-            activeIcon: Icon(Icons.person_rounded),
-            label: 'ملفي',
-          ),
-        ],
+        ),
+        child: Icon(
+          icon,
+          color: Colors.white,
+          size: 21,
+        ),
+      ),
+    );
+  }
+
+  // =========================
+  // Section Title
+  // =========================
+
+  Widget _sectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 19,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
@@ -504,135 +654,50 @@ class _MainHomePageState extends State<MainHomePage> {
   // =========================
   // Hero Info
   // =========================
+
   Widget _heroInfo({
     required IconData icon,
     required String title,
-    required String value,
+    required Widget child,
   }) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      height: 112,
+      padding: const EdgeInsets.all(13),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(17),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.07),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Icon(
             icon,
-            color: Colors.white,
+            color: lightBlue,
             size: 21,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 7),
           Text(
             title,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: 11,
-            ),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            value,
-            textAlign: TextAlign.right,
             style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
+              color: Colors.white60,
+              fontSize: 10,
             ),
           ),
+          const SizedBox(height: 4),
+          child,
         ],
       ),
     );
   }
 
   // =========================
-  // بطاقات أدوات الرحلة
+  // Tools Card
   // =========================
-  Widget _wideHomeCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(22),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 18,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Color(0xFF2E5339),
-              size: 18,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    title,
-                    textAlign: TextAlign.right,
-                    style: const TextStyle(
-                      color: Color(0xFF2E5339),
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    subtitle,
-                    textAlign: TextAlign.right,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 14),
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: const Color(0xFF2E5339).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Icon(
-                icon,
-                color: const Color(0xFF2E5339),
-                size: 25,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  // =========================
-  // بطاقات الخدمات
-  // =========================
-  Widget _serviceCard({
+  Widget _toolCard({
     required IconData icon,
     required String title,
     required String subtitle,
@@ -642,62 +707,200 @@ class _MainHomePageState extends State<MainHomePage> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
+        height: 125,
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.055),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.07),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: lightBlue.withOpacity(0.13),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: Icon(
+                icon,
+                color: lightBlue,
+                size: 23,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              subtitle,
+              style: const TextStyle(
+                color: Colors.white54,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =========================
+  // Meeting Point
+  // =========================
+
+  Widget _meetingCard() {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const MeetingPointPage(),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          gradient: LinearGradient(
+            colors: [
+              blueColor.withOpacity(0.8),
+              navyColor,
+            ],
+          ),
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          border: Border.all(
+            color: Colors.white.withOpacity(0.07),
+          ),
         ),
         child: Row(
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: 47,
+              height: 47,
               decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(15),
+                color: lightBlue.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(
-                icon,
-                color: primaryColor,
-                size: 26,
+              child: const Icon(
+                Icons.location_on_outlined,
+                color: lightBlue,
+                size: 24,
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 13),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'نقطة التجمع',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'فندق أبراج الصفوة · 8:00 مساء',
+                    style: TextStyle(
+                      color: Colors.white60,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white54,
+              size: 15,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =========================
+  // Service Card
+  // =========================
+
+  Widget _serviceCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(19),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.055),
+          borderRadius: BorderRadius.circular(19),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.07),
+          ),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white38,
+              size: 14,
+            ),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 16,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
-                      color: primaryColor,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 11,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 15,
-              color: primaryColor,
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                color: lightBlue.withOpacity(0.10),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(
+                icon,
+                color: lightBlue,
+                size: 23,
+              ),
             ),
           ],
         ),

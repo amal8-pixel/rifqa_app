@@ -4,7 +4,7 @@ class PilgrimsPage extends StatelessWidget {
   const PilgrimsPage({super.key});
 
   final Color primaryColor = const Color(0xFF2E5339);
-  final Color backgroundColor = const Color(0xFFFAF8F5);
+  final Color backgroundColor = const Color(0xFF0B1220);
 
   // =========================
   // إضافة معتمر
@@ -133,7 +133,7 @@ class PilgrimsPage extends StatelessWidget {
         title: const Text(
           'المعتمرون',
           style: TextStyle(
-            color: Color(0xFF2E5339),
+            color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -144,8 +144,7 @@ class PilgrimsPage extends StatelessWidget {
           },
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Color(0xFF2E5339),
-            size: 20,
+            color: Colors.white70,
           ),
         ),
       ),
@@ -172,20 +171,22 @@ class PilgrimsPage extends StatelessWidget {
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                   colors: [
-                    Color(0xFF416E51),
-                    Color(0xFF2E5339),
+                    Color(0xFF214E78),
+                    Color(0xFF10253F),
+                    Color(0xFF0D182B),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Row(
+                textDirection: TextDirection.rtl,
                 children: [
                   // عدد المعتمرين
                   Container(
                     width: 58,
                     height: 58,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.12),
+                      color: Colors.white.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: const Icon(
@@ -199,10 +200,11 @@ class PilgrimsPage extends StatelessWidget {
 
                   const Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           'عمرة رمضان 1448',
+                          textAlign: TextAlign.right,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -212,8 +214,9 @@ class PilgrimsPage extends StatelessWidget {
                         SizedBox(height: 6),
                         Text(
                           '7 معتمرين في الرحلة',
+                          textAlign: TextAlign.right,
                           style: TextStyle(
-                            color: Colors.white70,
+                            color: Colors.white60,
                             fontSize: 13,
                           ),
                         ),
@@ -281,7 +284,7 @@ class PilgrimsPage extends StatelessWidget {
                   vertical: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: primaryColor.withOpacity(0.07),
+                  color: primaryColor.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: primaryColor.withOpacity(0.15),
@@ -292,7 +295,7 @@ class PilgrimsPage extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.person_add_alt_1_rounded,
-                      color: primaryColor,
+                      color: Color(0xFF5C9BD1),
                       size: 21,
                     ),
                     const SizedBox(width: 8),
@@ -338,7 +341,10 @@ class PilgrimsPage extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white.withOpacity(0.05),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.06),
+          ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
@@ -349,6 +355,7 @@ class PilgrimsPage extends StatelessWidget {
           ],
         ),
         child: Row(
+          textDirection: TextDirection.rtl,
           children: [
             // =========================
             // الصورة / الحرف
@@ -359,14 +366,14 @@ class PilgrimsPage extends StatelessWidget {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: primaryColor.withOpacity(0.1),
+                    color: Color(0xFF5C9BD1),
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
                   child: Text(
                     initial,
                     style: TextStyle(
-                      color: primaryColor,
+                      color: Color(0xFF5C9BD1).withOpacity(0.15),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -400,12 +407,12 @@ class PilgrimsPage extends StatelessWidget {
             // =========================
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     name,
                     style: TextStyle(
-                      color: primaryColor,
+                      color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -414,7 +421,7 @@ class PilgrimsPage extends StatelessWidget {
                   Text(
                     role,
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: Colors.white60,
                       fontSize: 12,
                     ),
                   ),
@@ -439,7 +446,7 @@ class PilgrimsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 const Icon(
-                  Icons.arrow_forward_ios_rounded,
+                  Icons.arrow_back_ios_rounded,
                   color: Color(0xFF2E5339),
                   size: 13,
                 ),
@@ -467,7 +474,7 @@ class PilgrimsPage extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
-            color: Color(0xFFFAF8F5),
+            color: Color(0xFF101c33),
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(28),
             ),
@@ -513,7 +520,7 @@ class PilgrimsPage extends StatelessWidget {
               Text(
                 name,
                 style: TextStyle(
-                  color: primaryColor,
+                  color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -577,7 +584,7 @@ class PilgrimsPage extends StatelessWidget {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
+                    backgroundColor: Color(0xFF214E78),
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(
                       vertical: 14,
