@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PilgrimsPage extends StatefulWidget {
   const PilgrimsPage({super.key});
@@ -133,14 +134,21 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   final name = controller.text.trim();
 
-                  if (name.isEmpty) {
-                    return;
-                  }
+                  if (name.isEmpty) return;
 
-                  // إضافة المعتمر للقائمة
+                  // حفظ المعتمر في Firestore
+                  await FirebaseFirestore.instance.collection('pilgrims').add({
+                    'name': name,
+                    'role': 'معتمر',
+                    'isOnline': false,
+                    'initial': name.characters.first,
+                    'createdAt': Timestamp.now(),
+                  });
+
+                  // التحديث المحلي للقائمة
                   setState(() {
                     pilgrims.add({
                       'name': name,
@@ -150,8 +158,12 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
                     });
                   });
 
+                  if (!mounted) return;
+
+                  // إغلاق النافذة المنبثقة
                   Navigator.pop(dialogContext);
 
+                  // إظهار رسالة التأكيد
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
@@ -189,9 +201,6 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: backgroundColor,
-        // =========================
-        // App Bar
-        // =========================
         appBar: AppBar(
           backgroundColor: backgroundColor,
           elevation: 0,
@@ -215,15 +224,10 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
             ),
           ),
         ),
-
-        // =========================
-        // Body
-        // =========================
         body: SafeArea(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
             children: [
-              // معلومات الرحلة
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -283,10 +287,7 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 28),
-
-              // عنوان القائمة
               Row(
                 textDirection: TextDirection.rtl,
                 children: [
@@ -310,10 +311,7 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 14),
-
-              // قائمة المعتمرين
               ...pilgrims.map(
                 (pilgrim) => _pilgrimCard(
                   context: context,
@@ -323,10 +321,7 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
                   initial: pilgrim['initial'],
                 ),
               ),
-
               const SizedBox(height: 8),
-
-              // زر إضافة معتمر
               InkWell(
                 onTap: () {
                   _showAddPilgrimDialog(context);
@@ -344,16 +339,16 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
                       color: accentColor.withOpacity(0.25),
                     ),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.person_add_alt_1_rounded,
                         color: accentColor,
                         size: 21,
                       ),
-                      const SizedBox(width: 8),
-                      const Text(
+                      SizedBox(width: 8),
+                      Text(
                         'إضافة معتمر',
                         style: TextStyle(
                           color: accentColor,
@@ -372,9 +367,6 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
     );
   }
 
-  // =========================
-  // بطاقة المعتمر
-  // =========================
   Widget _pilgrimCard({
     required BuildContext context,
     required String name,
@@ -406,7 +398,6 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
           textDirection: TextDirection.ltr,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // الحالة + السهم يسار
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -426,10 +417,7 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
                 ),
               ],
             ),
-
             const SizedBox(width: 14),
-
-            // معلومات المعتمر
             Expanded(
               child: Directionality(
                 textDirection: TextDirection.rtl,
@@ -458,10 +446,7 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
                 ),
               ),
             ),
-
             const SizedBox(width: 14),
-
-            // صورة المعتمر يمين
             Stack(
               children: [
                 Container(
@@ -506,9 +491,6 @@ class _PilgrimsPageState extends State<PilgrimsPage> {
     );
   }
 
-  // =========================
-  // معلومات المعتمر
-  // =========================
   void _showPilgrimInfo(
     BuildContext context,
     String name,
